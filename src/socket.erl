@@ -48,6 +48,7 @@
                               {packet, line},
                               {ip, {0,0,0,0}},
                               {versions, ['tlsv1', 'tlsv1.1', 'tlsv1.2']},
+                              {ciphers, ssl:cipher_suites(default)},
                               {port, 0}]).
 
 -ifdef(TEST).
@@ -121,7 +122,7 @@ accept(Socket, Timeout) when is_port(Socket) ->
 accept(Socket, Timeout) ->
 	case ssl:transport_accept(Socket, Timeout) of
 		{ok, NewSocket} ->
-			ssl:ssl_accept(NewSocket),
+			ssl:handshake(NewSocket),
 			{ok, NewSocket};
 		Error -> Error
 	end.
@@ -230,7 +231,7 @@ to_ssl_server(Socket, Options) ->
 
 -spec to_ssl_server(Socket :: socket(), Options :: list(), Timeout :: non_neg_integer() | 'infinity') -> {'ok', ssl:socket()} | {'error', any()}.
 to_ssl_server(Socket, Options, Timeout) when is_port(Socket) ->
-	ssl:ssl_accept(Socket, ssl_listen_options(Options), Timeout);
+	ssl:handshake(Socket, ssl_listen_options(Options), Timeout);
 to_ssl_server(_Socket, _Options, _Timeout) ->
 	{error, already_ssl}.
 
