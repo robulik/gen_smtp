@@ -11,4 +11,5 @@ src/smtp_rfc822_parse.erl
 deps/
 _build
 .rebar
+.rebar/
 compile_commands.json
